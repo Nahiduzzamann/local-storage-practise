@@ -40,7 +40,6 @@ function saveInputFieldText(id) {
 function saveValueToLocalStorage(value, key) {
     // let save 
     // console.log(localStorage.getItem(key));
-    console.log(document.getElementById(key).value[0]);
 
     if (document.getElementById(key).value[0] === ' ' || document.getElementById(key).value === '') {
         alert('Please input valid value');
@@ -55,52 +54,66 @@ function saveValueToLocalStorage(value, key) {
     }
     setValueFromLocalStorageToForm(key);
 }
+// local storage checker and storing
+function localStorageObjectChecker(nameFieldValue, emailFieldValue, messageFieldValue) {
 
+    let Person = {};
+    Person.message = messageFieldValue;
+    Person.email = emailFieldValue;
+    Person.name = nameFieldValue;
+    const personObjectToString = JSON.stringify(Person);
+
+    if (document.getElementById('name').value[0] === ' ' || document.getElementById('name').value === '' || document.getElementById('email').value[0] === ' ' || document.getElementById('email').value === '' || document.getElementById('message').value[0] === ' ' || document.getElementById('message').value === '') {
+        alert('Please input valid value');
+
+    }
+    else if (localStorage.getItem('person') === null) {
+        // set to local storage 
+        localStorage.setItem('person', personObjectToString);
+        //return object
+        const personString = localStorage.getItem('person');
+        const personStringToObject = JSON.parse(personString);
+        return personStringToObject;
+    }
+    else {
+        localStorage.removeItem('person');
+        // set to local storage 
+        localStorage.setItem('person', personObjectToString);
+        //return object
+        const personString = localStorage.getItem('person');
+        const personStringToObject = JSON.parse(personString);
+        return personStringToObject;
+    }
+}
 // get all value from form 
 function saveAllInputFieldText(nameID, emailId, messageId) {
     const nameFieldValue = document.getElementById(nameID).value;
     const emailFieldValue = document.getElementById(emailId).value;
     const messageFieldValue = document.getElementById(messageId).value;
 
-    console.log(nameFieldValue, emailFieldValue, messageFieldValue);
-
-
+    //object checker
+    const Person = localStorageObjectChecker(nameFieldValue, emailFieldValue, messageFieldValue);
 
     document.getElementById(nameID).value = '';
     document.getElementById(emailId).value = '';
     document.getElementById(messageId).value = '';
-
+    console.log(Person);
 }
-// local storage checker
-function localStorageObjectChecker(key, value, object) {
 
-}
+
 // delete all local storage value 
-function deleteAllInputFieldText(nameID, emailId, messageId) {
-    if (localStorage.getItem(nameID) === null) {
-        document.getElementById(nameID).value = '';
+function deleteAllInputFieldText() {
+    // getting key and value from local storage 
+    for (let [key, value] of Object.entries(localStorage)) {
+        if (localStorage.getItem(key) === null) {
+            document.getElementById(key).value = '';
+        }
+        else {
+            localStorage.removeItem(key);
+            document.getElementById(key).value = '';
+        }
     }
-    else {
-        localStorage.removeItem(nameID);
-        document.getElementById(nameID).value = '';
 
-    }
-    if (localStorage.getItem(emailId) === null) {
-        document.getElementById(emailId).value = '';
-
-    }
-    else {
-        localStorage.removeItem(emailId);
-        document.getElementById(emailId).value = '';
-    }
-    if (localStorage.getItem(messageId) === null) {
-        document.getElementById(messageId).value = '';
-
-    }
-    else {
-        localStorage.removeItem(messageId);
-        document.getElementById(messageId).value = '';
-    }
 }
 // form value delete field 
 function deleteInputFieldText(key) {
@@ -113,7 +126,7 @@ function deleteInputFieldText(key) {
         const message = localStorage.getItem(key);
         const isAgree = prompt(`your text is: 
         "${message}"
-        Do you want to delete your Text?`,'ok');
+        Do you want to delete your Text?`, 'ok');
         if (isAgree != null) {
             localStorage.removeItem(key);
             document.getElementById(key).value = '';
@@ -125,7 +138,7 @@ function deleteInputFieldText(key) {
         const message = localStorage.getItem(key);
         const isAgree = prompt(`your text is: 
         "${message}" 
-        Do you want to delete your Text?`,'ok');
+        Do you want to delete your Text?`, 'ok');
         if (isAgree != null) {
             localStorage.removeItem(key);
             document.getElementById(key).value = '';
