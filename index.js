@@ -9,14 +9,14 @@ function setValueFromLocalStorageToForm(key = '', key1 = 'name', key2 = 'email')
         }
         else {
             const oldName = localStorage.getItem(key1);
-            document.getElementById(key1).value = oldName;
+            document.getElementById(key1).value = '';
         }
         if (localStorage.getItem(key2) === null) {
 
         }
         else {
             const oldName = localStorage.getItem(key2);
-            document.getElementById(key2).value = oldName;
+            document.getElementById(key2).value = '';
         }
         document.getElementById('message').value = '';
     }
@@ -25,8 +25,8 @@ function setValueFromLocalStorageToForm(key = '', key1 = 'name', key2 = 'email')
 
         }
         else {
-            const oldName = localStorage.getItem(key);
-            document.getElementById(key).value = oldName;
+            // const oldName = localStorage.getItem(key);
+            document.getElementById(key).value = '';
         }
     }
     dataVisual();
@@ -50,10 +50,14 @@ function saveValueToLocalStorage(value, key) {
     }
     else if (localStorage.getItem(key) === null) {
         localStorage.setItem(key, value);
+        document.getElementById(key).value = '';
+
     }
     else {
         localStorage.removeItem(key);
         localStorage.setItem(key, value);
+        document.getElementById(key).value = '';
+
     }
     // setValueFromLocalStorageToForm(key);
     dataVisual();
@@ -95,6 +99,11 @@ function saveAllInputFieldText(nameID, emailId, messageId) {
     const nameFieldValue = document.getElementById(nameID).value;
     const emailFieldValue = document.getElementById(emailId).value;
     const messageFieldValue = document.getElementById(messageId).value;
+    if (emailFieldValue === '' || emailFieldValue[0] === ' ') {
+        alert('Please enter valid value');
+        dataVisual();
+        return;
+    }
 
     //object checker
     const Person = localStorageObjectChecker(nameFieldValue, emailFieldValue, messageFieldValue);
@@ -107,16 +116,15 @@ function saveAllInputFieldText(nameID, emailId, messageId) {
     document.getElementById('table').innerText = '';
     const tBody = document.getElementById('table');
     const tr = document.createElement('tr');
-    try{
+    try {
         tr.innerHTML = `<td>${Person.name}</td>
     <td>${Person.email}</td>
     <td>${Person.message}</td>`;
-    tBody.appendChild(tr);
-    }catch(e){
+        tBody.appendChild(tr);
+    } catch (e) {
 
     }
 
-    return Person;
 }
 
 
@@ -125,14 +133,15 @@ function deleteAllInputFieldText() {
     // getting key and value from local storage 
     for (let [key, value] of Object.entries(localStorage)) {
         if (localStorage.getItem(key) === null) {
-            document.getElementById(key).value = '';
+            // document.getElementById(key).value = '';
         }
         else {
             localStorage.removeItem(key);
-            document.getElementById(key).value = '';
+            // document.getElementById(key).value = '';
         }
     }
-    dataVisual();
+    document.getElementById('table').innerText = '';
+    // dataVisual();
 }
 // form value delete field 
 function deleteInputFieldText(key) {
@@ -189,15 +198,28 @@ function deleteInputFieldText(key) {
 function dataVisual() {
     // const Person = saveAllInputFieldText('name','email','message');
     // console.log(Person);
+    const personString = localStorage.getItem('person');
+    const Person = JSON.parse(personString);
+
     const name = localStorage.getItem('name');
     const email = localStorage.getItem('email');
     const message = localStorage.getItem('message');
+
     document.getElementById('table').innerText = '';
+
     const tBody = document.getElementById('table');
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td>${name}</td>
+    try {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${name ? name : Person.name}</td>
+    <td>${email ? email : Person.email}</td>
+    <td>${message ? message : Person.message}</td>`;
+        tBody.appendChild(tr);
+    } catch (e) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${name}</td>
     <td>${email}</td>
     <td>${message}</td>`;
-    tBody.appendChild(tr);
+        tBody.appendChild(tr);
+    }
 }
 setValueFromLocalStorageToForm()
