@@ -1,6 +1,8 @@
 // set value from local storage to form 
 function setValueFromLocalStorageToForm(key = '', key1 = 'name', key2 = 'email') {
 
+    dataVisual();
+
     if (key === '' || key === 'message') {
         if (localStorage.getItem(key1) === null) {
 
@@ -27,6 +29,7 @@ function setValueFromLocalStorageToForm(key = '', key1 = 'name', key2 = 'email')
             document.getElementById(key).value = oldName;
         }
     }
+    dataVisual();
 
 }
 // get value from form 
@@ -52,9 +55,11 @@ function saveValueToLocalStorage(value, key) {
         localStorage.removeItem(key);
         localStorage.setItem(key, value);
     }
-    setValueFromLocalStorageToForm(key);
+    // setValueFromLocalStorageToForm(key);
+    dataVisual();
+
 }
-// local storage checker and storing
+// local storage object checker and storing
 function localStorageObjectChecker(nameFieldValue, emailFieldValue, messageFieldValue) {
 
     let Person = {};
@@ -97,7 +102,21 @@ function saveAllInputFieldText(nameID, emailId, messageId) {
     document.getElementById(nameID).value = '';
     document.getElementById(emailId).value = '';
     document.getElementById(messageId).value = '';
-    console.log(Person);
+    // console.log(Person);
+    //data visual
+    document.getElementById('table').innerText = '';
+    const tBody = document.getElementById('table');
+    const tr = document.createElement('tr');
+    try{
+        tr.innerHTML = `<td>${Person.name}</td>
+    <td>${Person.email}</td>
+    <td>${Person.message}</td>`;
+    tBody.appendChild(tr);
+    }catch(e){
+
+    }
+
+    return Person;
 }
 
 
@@ -113,13 +132,14 @@ function deleteAllInputFieldText() {
             document.getElementById(key).value = '';
         }
     }
-
+    dataVisual();
 }
 // form value delete field 
 function deleteInputFieldText(key) {
     if (localStorage.getItem(key) === null) {
         alert('No data stored');
         setValueFromLocalStorageToForm()
+        dataVisual();
         return;
     }
     else if (key === 'message' && document.getElementById(key).value === '') {
@@ -130,8 +150,11 @@ function deleteInputFieldText(key) {
         if (isAgree != null) {
             localStorage.removeItem(key);
             document.getElementById(key).value = '';
+            dataVisual();
+
             return;
         }
+        dataVisual();
         return
     }
     else if (key === 'message') {
@@ -142,19 +165,39 @@ function deleteInputFieldText(key) {
         if (isAgree != null) {
             localStorage.removeItem(key);
             document.getElementById(key).value = '';
+            dataVisual();
             return;
         }
+        dataVisual();
         return
     }
     else if (document.getElementById(key).value[0] === ' ' || document.getElementById(key).value === '') {
         alert('Please delete the stored visual name');
         setValueFromLocalStorageToForm()
+        dataVisual();
         return;
     }
     else {
         localStorage.removeItem(key);
         document.getElementById(key).value = '';
+        dataVisual();
         return;
     }
+
+}
+// data visual from local storage 
+function dataVisual() {
+    // const Person = saveAllInputFieldText('name','email','message');
+    // console.log(Person);
+    const name = localStorage.getItem('name');
+    const email = localStorage.getItem('email');
+    const message = localStorage.getItem('message');
+    document.getElementById('table').innerText = '';
+    const tBody = document.getElementById('table');
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${name}</td>
+    <td>${email}</td>
+    <td>${message}</td>`;
+    tBody.appendChild(tr);
 }
 setValueFromLocalStorageToForm()
